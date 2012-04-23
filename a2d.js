@@ -32,7 +32,7 @@
                     this.resources[name] = new a2d.Audio();
                 }
                 this.resources[name].onload = this.progress;
-                this.resources[name].onreadystatechange = function() { console.log("ReadyState"); this.progress(); };
+                this.resources[name].onreadystatechange = function() { this.progress(); };
                 this.resources[name].src = loadData[name];
             }
         }
@@ -48,8 +48,6 @@
                 if(a2d.resources.hasOwnProperty(name)) {
                     if((a2d.resources[name].width && a2d.resources[name].width > 0) || (a2d.resources[name].play)) {
                         c++;
-                    } else {
-                        console.log(a2d.resources[name].readyState);
                     }
                     total++;
                 }
@@ -96,7 +94,6 @@
             });
             this.a2dCanvas.addEventListener("mouseup", function(e) {
                 var clickedNode = a2d.root.findNodeAt(a2d.mousePosition);
-                console.log(clickedNode);
                 if(clickedNode) {
                     clickedNode.fireEvent.call(clickedNode, "mouseup");
                     clickedNode.fireEvent.call(clickedNode, "click");
