@@ -1,6 +1,7 @@
 /**
  * Particle System
  * @class
+ * @augments a2d.SceneNode
  * @param {object} particleSettings
  * @param {number} particleSettings.frequency frequency in Hz(particles per second)
  * @param {a2d.Vector} particleSettings.startScale scale of the particle at the beginning of its life
