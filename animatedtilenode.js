@@ -55,7 +55,7 @@ a2d.AnimatedTileNode = function (image) {
     /** @type a2d.Position */
     this.position = new a2d.Position(0, 0);
     /** 
-      * 1.0 is opaque, 0.0 is trasparent
+      * 1.0 is opaque, 0.0 is transparent
       * @type float 
       */
     this.opacity = 1.0;
@@ -90,6 +90,7 @@ a2d.AnimatedTileNode = function (image) {
     };
     /**
      * draws this node and its children
+     * @param {HTMLCanvasElement} [canvas] canvas to draw to
      */
     this.draw = function (canvas) {   
         var drawingCanvas = canvas || a2d.canvas;

@@ -161,44 +161,74 @@
      * @namespace
      */
     key: {
-        /**#@+
-         * @constant
-         */
+        /** @constant */
         BACKSPACE:8,
+        /** @constant */
         TAB:9,
+        /** @constant */
         ENTER:13,
+        /** @constant */
         SHIFT:16,
+        /** @constant */
         CTRL:17,
+        /** @constant */
         ALT:18,
+        /** @constant */
         PAUSE:19,
+        /** @constant */
         CAPS_LOCK:20,
+        /** @constant */
         ESC:27,
+        /** @constant */
         SPACE:32,
+        /** @constant */
         PAGEUP:33,
+        /** @constant */
         PAGEDOWN:34,
+        /** @constant */
         END:35,
+        /** @constant */
         HOME:36,
+        /** @constant */
         ARROW_LEFT:37,
+        /** @constant */
         ARROW_UP:38,
+        /** @constant */
         ARROW_RIGHT:39,
+        /** @constant */
         ARROW_DOWN:40,
+        /** @constant */
         INSERT:45,
+        /** @constant */
         DELETE:46,
+        /** @constant */
         F1:112,
+        /** @constant */
         F2:113,
+        /** @constant */
         F3:114,
+        /** @constant */
         F4:115,
+        /** @constant */
         F5:116,
+        /** @constant */
         F6:117,
+        /** @constant */
         F7:118,
+        /** @constant */
         F8:119,
+        /** @constant */
         F9:120,
+        /** @constant */
         F10:121,
+        /** @constant */
         F11:122,
+        /** @constant */
         F12:123,
+        /** @constant */
         NUM_LOCK:144,
+        /** @constant */
         SCROLL_LOCK:145
-        /**#@-*/
     }
 };
 /**
