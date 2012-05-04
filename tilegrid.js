@@ -2,12 +2,12 @@
 /** 
  *  a2d.TileGridNode
  *  @constructor
- *  @augments a2d.SceneNode
+ *  @augments a2d.Node
  *  @param {object} data data, possibly loaded as JSON from some source or other
  * */
-a2d.TileGridNode = function (data) {
+a2d.TileGrid = function (data) {
     'use strict';
-    a2d.SceneNode.apply(this);
+    a2d.Node.apply(this);
     var self = this,
         $draw = this.draw.bind(this),
         $fireEvent = this.fireEvent.bind(this),
@@ -148,7 +148,7 @@ a2d.TileGridNode = function (data) {
                 tiles[x][y].draw(miniCanvas, scale);
             }
         }
-        return new a2d.AnimatedTileNode(miniCanvas);
+        return new a2d.Tile(miniCanvas);
     };
     //if data is supplied in the constructor, use it.
     if(data) {

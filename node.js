@@ -6,7 +6,7 @@
  * @class
  */
 //warning: SceneNode pretends to be an array, do not use numerical indices unless you know what you are doing...
-a2d.SceneNode = function () {
+a2d.Node = function () {
     'use strict';
     a2d.Collection.apply(this);
     a2d.Events.apply(this);    
@@ -40,7 +40,7 @@ a2d.SceneNode = function () {
      * @default "SceneNode"
      * @type string
      */        
-    this.name = "SceneNode";
+    this.name = "Node";
     /**
      * Find node at given position
      * @param {a2d.Position} position to look for

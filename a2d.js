@@ -129,7 +129,7 @@
     get root() {
         if(!this.a2dRoot){
             console.log("acquire root node");
-            this.a2dRoot = new a2d.SceneNode();
+            this.a2dRoot = new a2d.Node();
             this.frame();
         }
         return this.a2dRoot;

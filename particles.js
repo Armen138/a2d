@@ -1,7 +1,7 @@
 /**
  * Particle System
  * @class
- * @augments a2d.SceneNode
+ * @augments a2d.Node
  * @param {object} particleSettings
  * @param {number} particleSettings.frequency frequency in Hz(particles per second)
  * @param {a2d.Vector} particleSettings.startScale scale of the particle at the beginning of its life
@@ -10,8 +10,8 @@
  * @param {Image} particleSettings.image the image to use for particles
  * @param {number} particleSettings.life the life time of a particle
  */
-a2d.ParticleSystem = function(particleSettings) {
-	a2d.SceneNode.apply(this);
+a2d.Particles = function(particleSettings) {
+	a2d.Node.apply(this);
 	var self = this,
 		particleLife = particleSettings.lifeTime || 1000,
 		particleSpeed = particleSettings.speed || 200,

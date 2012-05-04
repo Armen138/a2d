@@ -3,11 +3,11 @@
  * Animated Tile Node
  * @class
  * @param {Image} image Image element
- * @augments a2d.SceneNode 
+ * @augments a2d.Node 
  */
-a2d.AnimatedTileNode = function (image) {
+a2d.Tile = function (image) {
     'use strict';  
-    a2d.SceneNode.apply(this);    
+    a2d.Node.apply(this);    
     var frameTime = 0,
         tilePosition = new a2d.Position(0, 0),
         up = false,

@@ -3,11 +3,11 @@
  * Label. For text.
  * @class
  * @param {string} text to display
- * @augments a2d.SceneNode 
+ * @augments a2d.Node 
  */
 a2d.Label = function(t) {
 	'use strict';
-	a2d.SceneNode.apply(this);
+	a2d.Node.apply(this);
 	var self = this, 
 		text = t,
 		$draw = this.draw.bind(this);
