@@ -43,6 +43,9 @@ a2d.ParticleSystem = function(particleSettings) {
 			p.birth = (new Date()).getTime();
 			//p.relative = true;
 			p.position = new a2d.Position(self.position.X, self.position.Y);
+			if(self.relative) {
+				p.position.add(this.parent.position);
+			}
 			p.dir = new a2d.Vector(Math.cos(d), Math.sin(d));
 			lastParticle = p.birth;
 			self.push(p);

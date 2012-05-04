@@ -115,6 +115,41 @@ a2d.TileGridNode = function (data) {
         } 
         $draw();
     };
+    /**
+     * Get the visible area of the map
+     * @returns {object} o
+     * @returns {a2d.Position} o.from coordinates of the top left visible tile
+     * @returns {a2d.Position} o.to coordinates of the bottom right tile
+     */
+    this.visibleArea = function() {
+        return ({
+            from: this.getTile(a2d.offset),
+            to: new a2d.Position((fromTile.X + Math.floor(a2d.dimension.Width / tileSize.Width) + 1) + 1,
+                (fromTile.Y + Math.floor(a2d.dimension.Height / tileSize.Height) + 1) + 1)
+        });
+    };
+    /**
+     * render an image of this tilegrid in the given size,
+     * presumably to use as a base for a minimap.
+     * @param {a2d.Dimension} miniSize the size of the output
+     * @returns drawable a2d.SceneNode containing a static image of the level in requested size.
+     * warning: using sizes that result in fractured scales may leave some lines blank between tiles.
+     */
+    this.getMini = function(miniSize) {
+        var miniCanvas = document.createElement("canvas"),
+            miniContext = miniCanvas.getContext("2d"),
+            fullWidth = tileSize.Width * gridSize.Width,
+            fullHeight = tileSize.Height * gridSize.Height,
+            scale = new a2d.Vector(miniSize.Width / fullWidth, miniSize.Height / fullHeight);
+        miniCanvas.width = miniSize.Width;
+        miniCanvas.height = miniSize.Height;
+        for(var x = 0; x < gridSize.Width; x++) {
+            for(var y = 0; y < gridSize.Height; y++) {
+                tiles[x][y].draw(miniCanvas, scale);
+            }
+        }
+        return new a2d.AnimatedTileNode(miniCanvas);
+    };
     //if data is supplied in the constructor, use it.
     if(data) {
         this.setData(data);

@@ -92,7 +92,7 @@ a2d.AnimatedTileNode = function (image) {
      * draws this node and its children
      * @param {HTMLCanvasElement} [canvas] canvas to draw to
      */
-    this.draw = function (canvas) {   
+    this.draw = function (canvas, forceScale) {   
         var drawingCanvas = canvas || a2d.canvas;
         var drawingContext = drawingCanvas.getContext("2d");
         updateBB();
@@ -133,10 +133,15 @@ a2d.AnimatedTileNode = function (image) {
                 p.add(this.parent.position);
             }
             if(!this.scrollLock){ p.add(a2d.offset); }
+            if(forceScale) { p.scale(forceScale); }
             drawingContext.save();
             drawingContext.translate(p.X, p.Y);
             drawingContext.rotate(this.angle);
-            drawingContext.scale(this.scale.X, this.scale.Y);
+            if(forceScale) {
+              drawingContext.scale(forceScale.X, forceScale.Y);
+            } else {
+              drawingContext.scale(this.scale.X, this.scale.Y);
+            }
             drawingContext.globalAlpha = this.opacity;
             drawingContext.drawImage(this.image, tilePosition.X, tilePosition.Y, this.tileSize.Width, this.tileSize.Height, -(this.tileSize.Width / 2), -(this.tileSize.Height / 2), this.tileSize.Width, this.tileSize.Height);
             drawingContext.restore();

@@ -77,7 +77,9 @@
                 this.a2dCanvas = document.createElement("canvas");
                 document.body.appendChild(this.a2dCanvas);
                 var windowSize = new a2d.Dimension(window.innerWidth, window.innerHeight);
-                this.setSize(windowSize);
+                //this.setSize(windowSize);
+                this.a2dCanvas.setAttribute("width", windowSize.Width);
+                this.a2dCanvas.setAttribute("height", windowSize.Height);                
             }
             a2d.mousePosition = new a2d.Position(0, 0);
             this.a2dCanvas.addEventListener("mousemove", function(e) {
