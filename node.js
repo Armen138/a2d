@@ -91,3 +91,65 @@ a2d.Node = function () {
         //this.fireEvent("draw");
     };
 };
+
+a2d.Node2 = {
+    scrollLock: false,
+    opacity: 1.0,
+    hover: false,
+    scale: {1.0, 1.0},
+    visible: true,
+    name: "Node",
+    findNodeAt: function(pos) {
+        var searchPos = new a2d.Position(pos.X, pos.Y);
+        if(this.scrollLock) {
+            searchPos.add(a2d.offset);
+        }
+        //look up in reverse drawing order so only the top node is returned
+        for(var i = self.length - 1; i >= 0; i--) {
+            var found = self[i].findNodeAt(searchPos);
+            if(found){
+                return found;
+            }
+        }
+        if(searchPos.isInside(self.boundingBox) && (self.hasEvent("click") || self.hasEvent("mousedown"))) {
+            return self;
+        }
+        return null; 
+    },
+    draw: function () {
+        var i,
+            mouse = a2d.mousePosition ? new a2d.Position(a2d.mousePosition.X, a2d.mousePosition.Y) : new a2d.Position(0, 0);
+        if(this.scrollLock) {
+            mouse.add(a2d.offset);
+        }        
+        if(mouse && mouse.isInside(this.boundingBox)) {            
+            if(!this.hover) {
+                this.fireEvent("mouseover")
+                this.hover = true
+            }
+        } else {
+            if(this.hover) {
+                this.fireEvent("mouseout");
+                this.hover = false;
+            }
+        }
+        if(this.visible) {
+            for (i = 0; i < this.length; i++) {
+                this[i].draw();
+            }            
+        }
+        //this.fireEvent("draw");
+    },
+    create: function() {
+        return Object.create(a2d.Node2);
+    },
+    eat: function(obj) {
+        for(var p in obj) {
+            this[p] = obj[p];
+        }
+    }
+};
+//a2d.Node2.eat(a2d.Collection);
+//a2d.Node2.eat(a2d.Events);
+a2d.Collection.apply(a2d.Node2);
+a2d.Events.apply(a2d.Node2); 

@@ -38,7 +38,7 @@ a2d.Particles = function(particleSettings) {
 		if(newParticles > 0);
 		for(var i = 0; i < newParticles; i++) {
 		//if(now > lastParticle + 1000 / frequency) {
-			var p = new a2d.AnimatedTileNode(particleImage),
+			var p = new a2d.Tile(particleImage),
 				d = Math.random() * 6.28; //2*PI
 			p.birth = (new Date()).getTime();
 			//p.relative = true;

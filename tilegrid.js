@@ -29,7 +29,7 @@ a2d.TileGrid = function (data) {
                 tiles[x] = [];
             }
             for(y = 0; y < gridSize.Height; y++) { 
-                tiles[x][y] = new a2d.AnimatedTileNode(a2d.resources[data.tileSet]);
+                tiles[x][y] = new a2d.Tile(a2d.resources[data.tileSet]);
                 tiles[x][y].tileSize = tileSize;
                 tiles[x][y].setTile(data.tiles[tileCount]);
                 if(data.tiles[tileCount] !== -1) {

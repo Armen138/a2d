@@ -23,14 +23,19 @@ a2d.Tile = function (image) {
       			}
     		},
         updateBB = function() {
-            self.boundingBox.topLeft.X = self.position.X - self.tileSize.Width / 2;
-            self.boundingBox.topLeft.Y = self.position.Y - self.tileSize.Height / 2;
-            self.boundingBox.bottomRight.X = self.position.X + self.tileSize.Width / 2;
-            self.boundingBox.bottomRight.Y = self.position.Y + self.tileSize.Height / 2;
-            self.boundingBox.topRight.X = self.position.X + self.tileSize.Width / 2;
-            self.boundingBox.topRight.Y = self.position.Y - self.tileSize.Height / 2;
-            self.boundingBox.bottomLeft.X = self.position.X - self.tileSize.Width / 2;
-            self.boundingBox.bottomLeft.Y = self.position.Y + self.tileSize.Height / 2;
+            var x = self.position.X,
+              y = self.position.Y;
+            if(x < 0) { x += a2d.dimension.Width; }
+            if(y < 0) { y += a2d.dimension.Height; }
+
+            self.boundingBox.topLeft.X = x - self.tileSize.Width / 2;
+            self.boundingBox.topLeft.Y = y - self.tileSize.Height / 2;
+            self.boundingBox.bottomRight.X = x + self.tileSize.Width / 2;
+            self.boundingBox.bottomRight.Y = y + self.tileSize.Height / 2;
+            self.boundingBox.topRight.X = x + self.tileSize.Width / 2;
+            self.boundingBox.topRight.Y = y - self.tileSize.Height / 2;
+            self.boundingBox.bottomLeft.X = x - self.tileSize.Width / 2;
+            self.boundingBox.bottomLeft.Y = y + self.tileSize.Height / 2;
         };
     /** @type Image */
     this.image = image;
@@ -108,7 +113,7 @@ a2d.Tile = function (image) {
                     frameTime = 0;
                     /**
                      * register this event to handle things when the animation ends.
-                     * @name a2d.AnimatedTileNode#animationend
+                     * @name a2d.Tile#animationend
                      * @event
                      * @example
                      * animatedNode.on("animationend", function() {
@@ -129,6 +134,12 @@ a2d.Tile = function (image) {
             
         if(this.visible){
             var p = new a2d.Position(this.position.X, this.position.Y);
+            if(p.X < 0) {
+              p.X += a2d.dimension.Width;              
+            }
+            if(p.Y < 0) {
+              p.Y += a2d.dimension.Height;
+            }
             if(this.relative) {
                 p.add(this.parent.position);
             }

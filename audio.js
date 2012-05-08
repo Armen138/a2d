@@ -1,3 +1,6 @@
+/**
+ * A convenience wrapper for html5 audio
+ */
 a2d.Audio = function() {
 	this.channels = [];
 	this.channels.length = 8;
