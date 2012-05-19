@@ -6,11 +6,12 @@
  * */
  var a2d = {
     /** a2d engine version */
-    version: "0.4.0.0",
+    version: "0.4.0.1",
     /** @private */
     a2dCanvas: null,
     a2dRoot: null,
     a2dOffset: null,
+    forceClear: false,
     resources: [],
     loaded: false,
     offset: {
@@ -138,7 +139,10 @@
         this.a2dRoot = node;
     },
     /** @private */
-    frame : function () {        
+    frame : function () {     
+        if(a2d.forceClear) {
+            a2d.canvas.width = a2d.canvas.width;
+        }   
         a2d.requestFrame(a2d.frame);        
         a2d.root.draw();
         a2d.fireEvent("draw");

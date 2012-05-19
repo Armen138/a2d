@@ -92,6 +92,7 @@ a2d.Node = function () {
     };
 };
 
+/*
 a2d.Node2 = {
     scrollLock: false,
     opacity: 1.0,
@@ -153,3 +154,4 @@ a2d.Node2 = {
 //a2d.Node2.eat(a2d.Events);
 a2d.Collection.apply(a2d.Node2);
 a2d.Events.apply(a2d.Node2); 
+*/
