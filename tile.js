@@ -134,10 +134,10 @@ a2d.Tile = function (image) {
             
         if(this.visible){
             var p = new a2d.Position(this.position.X, this.position.Y);
-            if(p.X < 0) {
+            if(self.scrollLock && p.X < 0) {
               p.X += a2d.dimension.Width;              
             }
-            if(p.Y < 0) {
+            if(self.scrollLock && p.Y < 0) {
               p.Y += a2d.dimension.Height;
             }
             if(this.relative) {
