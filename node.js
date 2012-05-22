@@ -13,6 +13,12 @@ a2d.Node = function () {
     var self = this;
     this.scrollLock = false;      
     this.opacity = 1.0;
+    this.position = new a2d.Position(0, 0);
+    this.set = function(config) {
+        for(var p in config) {
+            this[p] = config[p];
+        }
+    };
     /**
      * bounding box of this node, if applicable. Nodes that display things and want to handle mouse events should take care of setting this.
      * @type a2d.Rectangle
@@ -74,7 +80,8 @@ a2d.Node = function () {
         }        
         if(mouse && mouse.isInside(this.boundingBox)) {            
             if(!this.hover) {
-                this.fireEvent("mouseover")
+                this.fireEvent("mouseover");
+                this.fireEvent("hover");
                 this.hover = true
             }
         } else {

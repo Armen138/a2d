@@ -5,7 +5,7 @@
  * @param {Image} image Image element
  * @augments a2d.Node 
  */
-a2d.Tile = function (image) {
+a2d.Tile = function (image, opts) {
     'use strict';  
     a2d.Node.apply(this);    
     var frameTime = 0,
@@ -160,5 +160,8 @@ a2d.Tile = function (image) {
         $draw();
     };
     guessTileSize();
+    if(opts) {
+      this.set(opts);
+    }
     this.setTile(this.tile);
 };
