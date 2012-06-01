@@ -2,8 +2,17 @@
  * A convenience wrapper for html5 audio
  */
 a2d.Audio = function() {
+	var self = this;
 	this.channels = [];
 	this.channels.length = 8;
+	this.stop = function() {
+		for(var i = 0; i < this.channels.length; i++){
+			if(!this.channels[i].paused) {
+				this.channels[i].pause();
+				this.channels[i].currentTime = 0;			
+			}
+		}
+	};
 	this.play = function() {
 		if(!a2d.mute) {
 			var played = false;
@@ -25,6 +34,8 @@ a2d.Audio = function() {
 		for(var i = 0; i < this.channels.length; i++) {
 			this.channels[i] = new Audio();
 			this.channels[i].src = path;
+			this.channels[i].addEventListener("canplaythrough", function() { self.audioLoaded = true; if(self.onload) { self.onload.call(); } } );
 		}
 	});
+	this.onload = function() { alert("load!"); };
 };
