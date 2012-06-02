@@ -47,7 +47,7 @@
         if(!a2d.loaded) {
             for (name in a2d.resources) {
                 if(a2d.resources.hasOwnProperty(name)) {
-                    if((a2d.resources[name].width && a2d.resources[name].width > 0) || (a2d.resources[name].play)) {
+                    if((a2d.resources[name].width && a2d.resources[name].width > 0) || a2d.resources[name].audioLoaded /*|| (a2d.resources[name].play)*/) {
                         c++;
                     }
                     total++;
