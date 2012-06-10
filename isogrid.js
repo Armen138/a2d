@@ -21,25 +21,27 @@ a2d.IsoGrid = function (data) {
     this.boundingBox = new a2d.Rectangle(new a2d.Position(0, 0), new a2d.Position(a2d.dimension.Width, a2d.dimension.Height));
     this.scrollLock = true;
     this.setData = function (data) {
-        var x, y, tileCount = 0;
+        var x = 0, y = 0, tileCount = 0;
         gridSize = new a2d.Dimension(data.gridSize[0], data.gridSize[1]);
         tileSize = new a2d.Dimension(data.tileSize[0], data.tileSize[1]);
-        for(x = 0; x < gridSize.Width; x++) {
-            if (!tiles[x]) { 
-                tiles[x] = [];
-            }
-            for(y = 0; y < gridSize.Height; y++) { 
+        for(y = 0; y < gridSize.Height; y++) {         
+            for(x = 0; x < gridSize.Width; x++) {
+                if (!tiles[x]) { 
+                    tiles[x] = [];
+                }                    
                 tiles[x][y] = new a2d.Tile(a2d.resources[data.tileSet]);
                 tiles[x][y].tileSize = tileSize;
                 tiles[x][y].setTile(data.tiles[tileCount]);
                 if(data.tiles[tileCount] !== -1) {
                    tiles[x][y].edit = true;
-                }
-                tiles[x][y].position = new a2d.Position(x * tileSize.Width + (tileSize.Width / 2), y * tileSize.Height + (tileSize.Height / 2));
+                }            
+                tiles[x][y].position = new a2d.Position((x * tileSize.Width / 2) - y * (tileSize.Width / 2), (y * tileSize.Height / 2) + x * tileSize.Height / 2);
                 tileCount++;
             }
         }
+        //console.log(tileCount);
     };
+    this.getTileSize = function() { return tileSize; }
     /**
      * Hijack the fireEvent method to add a little tile-related information to each click event
      */
@@ -50,6 +52,7 @@ a2d.IsoGrid = function (data) {
                 eventObject = {};
             }
             eventObject.tile = self.getTile(a2d.mousePosition);
+            //console.log(eventObject.tile);
             eventObject.tileType = tiles[eventObject.tile.X][eventObject.tile.Y].tile;
         }
         $fireEvent(eventName, eventObject);
@@ -71,8 +74,49 @@ a2d.IsoGrid = function (data) {
      * @param {a2d.Position} pos pixel position
      */    
     this.getTile = function (pixelPosition) {
-        return (new a2d.Position(Math.floor(pixelPosition.X / tileSize.Width), Math.floor(pixelPosition.Y / tileSize.Height)));
+        var pp = pixelPosition.clone();
+        pp.X = pp.X / tileSize.Width;
+        pp.Y = pp.Y / tileSize.Height;
+        pp = a2d.ScreenToGame(pp);        
+        if(game.chrome) {
+            pp.Y -= 0.5;
+        } else {
+            pp.X -= 0.5;            
+        }
+        //
+        
+        pp = pp.floor();
+        //console.log(pp);
+        return pp;
     };
+
+/*
+    document.addEventListener("mousemove", function(e) {
+        var tp = self.getTile(new a2d.Position(e.clientX, e.clientY));
+        console.log(tp);
+        if(tiles[tp.X] && tiles[tp.X][tp.Y] && tp.not(self.last)) {
+            tiles[tp.X][tp.Y].opacity = 0.5;
+            if(self.last) {
+                tiles[self.last.X][self.last.Y].opacity = 1.0;
+            }
+            self.last = tp;
+        }
+    });
+*/
+    /*
+    this.on("mouseover", function() {
+        var tp = self.getTile(a2d.mousePosition);
+        console.log(tp);
+        if(tiles[tp.X] && tiles[tp.X][tp.Y]) {
+            tiles[tp.X][tp.Y].opacity = 0.5;
+            if(self.last) {
+                tiles[self.last.X][self.last.Y].opacity = 1.0;
+            }
+            self.last = tp;
+        }
+        //tiles[tp.X][tp.Y].on("mouseout", function(e) { e.target.opacity = 1.0; });
+                
+    });*/
 
      /**
      * @returns {a2d.Position} pixel position from tile position
@@ -91,20 +135,22 @@ a2d.IsoGrid = function (data) {
         var x, y,
             fromTile,
             toTile;
-        if (this.visible) {
-            if(!lastOffset || lastOffset.not(a2d.offset)) {
-                fromTile = this.getTile(a2d.offset);
-                fromTile.add(new a2d.Position(1, 1)); //correction for top/left tiles
-                fromTile.scale(new a2d.Position(-1, -1));
-                toTile = new a2d.Position((fromTile.X + Math.floor(a2d.dimension.Width / tileSize.Width) + 1) + 1,
-                (fromTile.Y + Math.floor(a2d.dimension.Height / tileSize.Height) + 1) + 1);
+        if (this.visible) {            
+            if(true) {//!lastOffset || lastOffset.not(a2d.offset)) {
+                canvasCache.width = canvasCache.width;
+                fromTile = new a2d.Position(0, 0); //this.getTile(a2d.offset);
+                //fromTile.add(new a2d.Position(1, 1)); //correction for top/left tiles
+                //fromTile.scale(new a2d.Position(-1, -1));
+                //toTile = new a2d.Position((fromTile.X + Math.floor(a2d.dimension.Width / tileSize.Width) + 1) + 1,                    
+                //(fromTile.Y + Math.floor(a2d.dimension.Height / (tileSize.Height / 4)) + 1) + 1);
+                toTile = new a2d.Position(gridSize.Width, gridSize.Height);
                 if(toTile.X > gridSize.Width){ toTile.X = gridSize.Width; }
                 if(toTile.Y > gridSize.Height){ toTile.Y = gridSize.Height; }
                 if(fromTile.X < 0){ fromTile.X = 0; }
                 if(fromTile.Y < 0){ fromTile.Y = 0; }
-                for(x = fromTile.X; x < toTile.X; x++){
-                    for(y = fromTile.Y; y < toTile.Y; y++){
-                        if(tiles[x][y].tile !== -1) {
+                for(y = fromTile.Y; y < toTile.Y; y++){
+                    for(x = fromTile.X; x < toTile.X; x++){
+                        if(tiles[x][y].tile !== -1) {                            
                             tiles[x][y].draw(canvasCache); 
                         }
                     }
