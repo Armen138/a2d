@@ -61,6 +61,7 @@ a2d.Collection = function() {
      * @returns the new length of the collection
      */
 	this.unshift = function(item) {
+		var i;
 		for(i = 0; i < this.length; i++) {
 			this[i + 1] = this[i];
 		}
@@ -91,5 +92,30 @@ a2d.Collection = function() {
 		for(i = 0; i < other.length; i++) {
 			this.push(other[i]);
 		}	
+	};
+
+	/**
+	 * Sort contents of this collection. There is no default sorting method,
+	 * it must be supplied.
+	 * @param {Function} sort function. Takes two arguments(a, b), returns a negative value if b > a, positive if a > b, 0 if they are equal.
+	 */
+	this.sort = function(sort) {
+		for(var i = 1; i < this.length; i++) {
+			if(sort(this[i], this[i - 1]) < 0) {
+				var t = this[i];
+				this[i] = this[i - 1];
+				this[i - 1] = t;
+			}
+		}
+	};
+
+	/**
+	 * foreach
+	 * @param {Function} callback to call for each item in this collection.
+	 */
+	this.foreach = function(eachfunc) {
+		for(var i = 0; i < this.length; i++) {
+			eachfunc(this[i]);
+		}
 	};
 };

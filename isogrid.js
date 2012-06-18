@@ -20,6 +20,7 @@ a2d.IsoGrid = function (data) {
     canvasCache.height = a2d.dimension.Height;
     this.boundingBox = new a2d.Rectangle(new a2d.Position(0, 0), new a2d.Position(a2d.dimension.Width, a2d.dimension.Height));
     this.scrollLock = true;
+    this.offset = new a2d.Position(0, 0);
     this.setData = function (data) {
         var x = 0, y = 0, tileCount = 0;
         gridSize = new a2d.Dimension(data.gridSize[0], data.gridSize[1]);
@@ -32,6 +33,7 @@ a2d.IsoGrid = function (data) {
                 tiles[x][y] = new a2d.Tile(a2d.resources[data.tileSet]);
                 tiles[x][y].tileSize = tileSize;
                 tiles[x][y].setTile(data.tiles[tileCount]);
+                tiles[x][y].parent = this;
                 if(data.tiles[tileCount] !== -1) {
                    tiles[x][y].edit = true;
                 }            
@@ -155,7 +157,7 @@ a2d.IsoGrid = function (data) {
                         }
                     }
                 } 
-                lastOffset = new a2d.Position(a2d.offset.X, a2d.offset.Y);
+                lastOffset = self.offset.clone(); //new a2d.Position(a2d.offset.X, a2d.offset.Y);
             }
             a2d.context.drawImage(canvasCache, 0, 0);    
         } 
@@ -169,7 +171,7 @@ a2d.IsoGrid = function (data) {
      */
     this.visibleArea = function() {
         return ({
-            from: this.getTile(a2d.offset),
+            from: this.getTile(self.offset),
             to: new a2d.Position((fromTile.X + Math.floor(a2d.dimension.Width / tileSize.Width) + 1) + 1,
                 (fromTile.Y + Math.floor(a2d.dimension.Height / tileSize.Height) + 1) + 1)
         });

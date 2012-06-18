@@ -6,18 +6,19 @@
  * */
  var a2d = {
     /** a2d engine version */
-    version: "0.4.0.1",
+    version: "0.4.0.2",
     /** @private */
     a2dCanvas: null,
     a2dRoot: null,
-    a2dOffset: null,
+    //a2dOffset: null,
     forceClear: false,
     resources: [],
     loaded: false,
-    offset: {
+    logicInterval: 30,
+    /* offset: {
         X: 0, 
         Y: 0
-    },
+    },*/
     mute: false,
     /**
      * Load resources.
@@ -87,7 +88,7 @@
                 var x = e.clientX + a2d.canvas.offsetLeft;
                 var y = e.clientY + a2d.canvas.offsetTop;
                 a2d.mousePosition = new a2d.Position(x, y);
-                a2d.mousePosition.subtract(a2d.offset);
+                //a2d.mousePosition.subtract(a2d.offset);
             });
             this.a2dCanvas.addEventListener("mousedown", function(e) {
                 var clickedNode = a2d.root.findNodeAt(a2d.mousePosition);
@@ -132,11 +133,17 @@
             console.log("acquire root node");
             this.a2dRoot = new a2d.Node();
             this.frame();
+            this.update();
         }
         return this.a2dRoot;
     },
     set root(node) {
         this.a2dRoot = node;
+    },
+    /** @private */
+    update: function() {
+        a2d.root.update();
+        setTimeout(a2d.update, a2d.logicInterval);
     },
     /** @private */
     frame : function () {     

@@ -13,12 +13,37 @@ a2d.Node = function () {
     var self = this;
     this.scrollLock = false;      
     this.opacity = 1.0;
-    this.position = new a2d.Position(0, 0);
+    this.position = new a2d.Position(0, 0);    
     this.set = function(config) {
         for(var p in config) {
             this[p] = config[p];
         }
     };
+    /**
+     * gets or sets the absolute position for this node.
+     * automagically updates relative position, if applicable.
+     * @property {a2d.Position} absolutePosition
+     * @name a2d.Node#absolutePosition
+     */
+    this.__defineGetter__("absolutePosition", function() {
+        if(this.parent) {
+            var aPos = this.parent.absolutePosition.clone();
+            aPos.add(this.position);
+            return aPos;
+        }
+        return this.position;
+    });
+
+    this.__defineSetter__("absolutePosition", function(p) {
+        if(this.parent) {
+            var aPos = this.parent.absolutePosition.clone();
+            aPos.subtract(p);
+            this.position = aPos;
+        } else {
+            this.position = p;
+        }
+    });
+
     /**
      * bounding box of this node, if applicable. Nodes that display things and want to handle mouse events should take care of setting this.
      * @type a2d.Rectangle
@@ -54,9 +79,12 @@ a2d.Node = function () {
      */
     this.findNodeAt = function(pos) {
         var searchPos = new a2d.Position(pos.X, pos.Y);
-        if(this.scrollLock) {
-            searchPos.add(a2d.offset);
+        if(this.offset) {
+            searchPos.add(this.offset);
         }
+        /*if(this.scrollLock) {
+            searchPos.add(a2d.offset);
+        }*/
         //look up in reverse drawing order so only the top node is returned
         for(var i = self.length - 1; i >= 0; i--) {
             var found = self[i].findNodeAt(searchPos);
@@ -68,21 +96,35 @@ a2d.Node = function () {
             return self;
         }
         return null; 
-    }    
+    };    
+
+    /**
+     * updates this node and its children
+     */
+    this.update = function() {
+        var i;
+        for (i = 0; i < this.length; i++) {
+            this[i].update();
+        } 
+    };
     /**
      * Draws this node and its children
      */     
     this.draw = function () {
         var i,
             mouse = a2d.mousePosition ? new a2d.Position(a2d.mousePosition.X, a2d.mousePosition.Y) : new a2d.Position(0, 0);
-        if(this.scrollLock) {
+        /*if(this.scrollLock) {
             mouse.add(a2d.offset);
-        }        
+        } */       
+        //inherit parent offset
+        if(this.parent && this.parent.offset) {
+            this.offset = this.parent.offset;
+        }
         if(mouse && mouse.isInside(this.boundingBox)) {            
             if(!this.hover) {
                 this.fireEvent("mouseover");
                 this.fireEvent("hover");
-                this.hover = true
+                this.hover = true;
             }
         } else {
             if(this.hover) {
@@ -98,67 +140,3 @@ a2d.Node = function () {
         //this.fireEvent("draw");
     };
 };
-
-/*
-a2d.Node2 = {
-    scrollLock: false,
-    opacity: 1.0,
-    hover: false,
-    scale: {1.0, 1.0},
-    visible: true,
-    name: "Node",
-    findNodeAt: function(pos) {
-        var searchPos = new a2d.Position(pos.X, pos.Y);
-        if(this.scrollLock) {
-            searchPos.add(a2d.offset);
-        }
-        //look up in reverse drawing order so only the top node is returned
-        for(var i = self.length - 1; i >= 0; i--) {
-            var found = self[i].findNodeAt(searchPos);
-            if(found){
-                return found;
-            }
-        }
-        if(searchPos.isInside(self.boundingBox) && (self.hasEvent("click") || self.hasEvent("mousedown"))) {
-            return self;
-        }
-        return null; 
-    },
-    draw: function () {
-        var i,
-            mouse = a2d.mousePosition ? new a2d.Position(a2d.mousePosition.X, a2d.mousePosition.Y) : new a2d.Position(0, 0);
-        if(this.scrollLock) {
-            mouse.add(a2d.offset);
-        }        
-        if(mouse && mouse.isInside(this.boundingBox)) {            
-            if(!this.hover) {
-                this.fireEvent("mouseover")
-                this.hover = true
-            }
-        } else {
-            if(this.hover) {
-                this.fireEvent("mouseout");
-                this.hover = false;
-            }
-        }
-        if(this.visible) {
-            for (i = 0; i < this.length; i++) {
-                this[i].draw();
-            }            
-        }
-        //this.fireEvent("draw");
-    },
-    create: function() {
-        return Object.create(a2d.Node2);
-    },
-    eat: function(obj) {
-        for(var p in obj) {
-            this[p] = obj[p];
-        }
-    }
-};
-//a2d.Node2.eat(a2d.Collection);
-//a2d.Node2.eat(a2d.Events);
-a2d.Collection.apply(a2d.Node2);
-a2d.Events.apply(a2d.Node2); 
-*/
