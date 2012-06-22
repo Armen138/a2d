@@ -133,7 +133,7 @@
             console.log("acquire root node");
             this.a2dRoot = new a2d.Node();
             this.frame();
-            this.update();
+            //this.update();
         }
         return this.a2dRoot;
     },
@@ -141,9 +141,9 @@
         this.a2dRoot = node;
     },
     /** @private */
-    update: function() {
-        a2d.root.update();
-        setTimeout(a2d.update, a2d.logicInterval);
+    update: function() {            
+        //a2d.fireEvent("update");
+        setTimeout(a2d.update, a2d.logicInterval);        
     },
     /** @private */
     frame : function () {     

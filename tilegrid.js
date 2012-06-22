@@ -19,7 +19,6 @@ a2d.TileGrid = function (data) {
     canvasCache.width = a2d.dimension.Width;
     canvasCache.height = a2d.dimension.Height;
     this.boundingBox = new a2d.Rectangle(new a2d.Position(0, 0), new a2d.Position(a2d.dimension.Width, a2d.dimension.Height));
-    //this.scrollLock = true;
     this.offset = new a2d.Position(0, 0);
     this.setData = function (data) {
         var x, y, tileCount = 0;
@@ -95,6 +94,9 @@ a2d.TileGrid = function (data) {
             toTile;
         if (this.visible) {
             if(!lastOffset || lastOffset.not(this.offset)) {
+                if(a2d.forceClear) {
+                    canvasCache.width = canvasCache.width;
+                }
                 fromTile = this.getTile(this.offset);
                 fromTile.add(new a2d.Position(1, 1)); //correction for top/left tiles
                 fromTile.scale(new a2d.Position(-1, -1));
@@ -112,7 +114,7 @@ a2d.TileGrid = function (data) {
                     }
                 } 
                 lastOffset = this.offset.clone();
-            }
+            }            
             a2d.context.drawImage(canvasCache, 0, 0);    
         } 
         $draw();

@@ -11,9 +11,11 @@ a2d.Node = function () {
     a2d.Collection.apply(this);
     a2d.Events.apply(this);    
     var self = this;
+    this.absolute = false;
     this.scrollLock = false;      
     this.opacity = 1.0;
-    this.position = new a2d.Position(0, 0);    
+    this.position = new a2d.Position(0, 0);  
+    this.offset = new a2d.Position(0, 0);  
     this.set = function(config) {
         for(var p in config) {
             this[p] = config[p];
@@ -41,6 +43,31 @@ a2d.Node = function () {
             this.position = aPos;
         } else {
             this.position = p;
+        }
+    });
+
+    /**
+     * gets or sets the absolute offset for this node.
+     * automagically updates relative position, if applicable.
+     * @property {a2d.Position} absoluteOffset
+     * @name a2d.Node#absoluteOffset
+     */
+    this.__defineGetter__("absoluteOffset", function() {
+        if(this.parent) {
+            var aPos = this.parent.absoluteOffset.clone();
+            aPos.add(this.offset);
+            return aPos;
+        }
+        return this.offset;
+    });
+
+    this.__defineSetter__("absoluteOffset", function(p) {
+        if(this.parent) {
+            var aPos = this.parent.absoluteOffset.clone();
+            aPos.subtract(p);
+            this.offset = aPos;
+        } else {
+            this.offset = p;
         }
     });
 
@@ -79,7 +106,7 @@ a2d.Node = function () {
      */
     this.findNodeAt = function(pos) {
         var searchPos = new a2d.Position(pos.X, pos.Y);
-        if(this.offset) {
+        if(this.offset && !this.absolute) {
             searchPos.add(this.offset);
         }
         /*if(this.scrollLock) {
@@ -97,29 +124,12 @@ a2d.Node = function () {
         }
         return null; 
     };    
-
-    /**
-     * updates this node and its children
-     */
-    this.update = function() {
-        var i;
-        for (i = 0; i < this.length; i++) {
-            this[i].update();
-        } 
-    };
     /**
      * Draws this node and its children
      */     
     this.draw = function () {
         var i,
             mouse = a2d.mousePosition ? new a2d.Position(a2d.mousePosition.X, a2d.mousePosition.Y) : new a2d.Position(0, 0);
-        /*if(this.scrollLock) {
-            mouse.add(a2d.offset);
-        } */       
-        //inherit parent offset
-        if(this.parent && this.parent.offset) {
-            this.offset = this.parent.offset;
-        }
         if(mouse && mouse.isInside(this.boundingBox)) {            
             if(!this.hover) {
                 this.fireEvent("mouseover");
@@ -137,6 +147,6 @@ a2d.Node = function () {
                 this[i].draw();
             }            
         }
-        //this.fireEvent("draw");
+        this.fireEvent("draw");
     };
 };

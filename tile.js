@@ -76,8 +76,10 @@ a2d.Tile = function (image, opts) {
 	this.setTile = function (t) {
 		this.tile = t;
 		if(t !== -1) {
-			tilePosition.Y = parseInt(t / (this.image.width / this.tileSize.Height), 10) * this.tileSize.Height;
-			tilePosition.X = parseInt(t % (this.image.width / this.tileSize.Height), 10) * this.tileSize.Width;
+			//tilePosition.Y = parseInt(t / (this.image.width / this.tileSize.Height), 10) * this.tileSize.Height;
+			//tilePosition.X = parseInt(t % (this.image.width / this.tileSize.Height), 10) * this.tileSize.Width;
+            tilePosition.Y = 0;
+            tilePosition.X = this.tileSize.Width * t;			
 		}
 	};
 	/**
@@ -131,17 +133,8 @@ a2d.Tile = function (image, opts) {
 		}
 			
 		if(this.visible){
-			var p = this.absolutePosition.clone();//new a2d.Position(this.position.X, this.position.Y);
-			if(self.scrollLock && p.X < 0) {
-				p.X += a2d.dimension.Width;              
-			}
-			if(self.scrollLock && p.Y < 0) {
-				p.Y += a2d.dimension.Height;
-			}
-			/*if(this.relative) {
-				p.add(this.parent.position);
-			}*/
-			if(self.parent && self.parent.offset) { p.add(self.parent.offset); }
+			var p = this.absolutePosition.clone();
+			if(self.absoluteOffset) { p.add(self.absoluteOffset); }
 			if(forceScale) { p.scale(forceScale); }
 			drawingContext.save();
 			drawingContext.translate(p.X, p.Y);
