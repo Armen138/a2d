@@ -13,11 +13,13 @@ a2d.Audio = function() {
 			}
 		}
 	};
-	this.play = function() {
+	this.play = function(loop) {
+		var doloop = loop || false;
 		if(!a2d.mute) {
 			var played = false;
 			for(var i = 0; i < this.channels.length; i++){
 				if(this.channels[i].currentTime == 0 || this.channels[i].ended) {
+					this.channels[i].loop = doloop;
 					this.channels[i].play();
 					played = true;
 					break;

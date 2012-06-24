@@ -21,10 +21,10 @@ a2d.Tile = function (image, opts) {
 			}
 		},
 		updateBB = function() {
-			var x = self.absolutePosition.X,
-				y = self.absolutePosition.Y;
-			if(x < 0) { x += a2d.dimension.Width; }
-			if(y < 0) { y += a2d.dimension.Height; }
+			var x = self.absolutePosition.X + self.offset.X,
+				y = self.absolutePosition.Y + self.offset.Y;
+			//if(x < 0) { x += a2d.dimension.Width; }
+			//if(y < 0) { y += a2d.dimension.Height; }
 
 			self.boundingBox.topLeft.X = x - self.tileSize.Width / 2;
 			self.boundingBox.topLeft.Y = y - self.tileSize.Height / 2;
@@ -76,10 +76,10 @@ a2d.Tile = function (image, opts) {
 	this.setTile = function (t) {
 		this.tile = t;
 		if(t !== -1) {
-			//tilePosition.Y = parseInt(t / (this.image.width / this.tileSize.Height), 10) * this.tileSize.Height;
-			//tilePosition.X = parseInt(t % (this.image.width / this.tileSize.Height), 10) * this.tileSize.Width;
-            tilePosition.Y = 0;
-            tilePosition.X = this.tileSize.Width * t;			
+			tilePosition.Y = parseInt(t / (this.image.width / this.tileSize.Height), 10) * this.tileSize.Height;
+			tilePosition.X = parseInt(t % (this.image.width / this.tileSize.Height), 10) * this.tileSize.Width;
+            //tilePosition.Y = 0;
+            //tilePosition.X = this.tileSize.Width * t;			
 		}
 	};
 	/**
