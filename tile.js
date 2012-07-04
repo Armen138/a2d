@@ -82,6 +82,10 @@ a2d.Tile = function (image, opts) {
             //tilePosition.X = this.tileSize.Width * t;			
 		}
 	};
+
+	this.__defineGetter__("animated", function() {
+		return frameTime !== 0;
+	});
 	/**
 	 * Initiate a frameloop
 	 * @param {a2d.Vector} range Beginning and ending to loop over
@@ -92,6 +96,14 @@ a2d.Tile = function (image, opts) {
 		this.loop = updown;
 		up = true;
 		frameTime = new Date().getTime();        
+	};
+	/**
+	 * Stop a frameloop
+	 * @param {number} tile The tile will be left with this tile ID.	 
+	 */	
+	this.stop = function(tile) {
+		this.setTile(tile || 0);
+		frameTime = 0;
 	};
 	/**
 	 * draws this node and its children

@@ -10,6 +10,7 @@
     /** @private */
     a2dCanvas: null,
     a2dRoot: null,
+    a2dFullSCreen: false,
     //a2dOffset: null,
     forceClear: false,
     resources: [],
@@ -73,15 +74,19 @@
     get canvas() {
         if(!this.a2dCanvas){
             console.log("acquire canvas");
-            this.a2dCanvas = document.getElementsByTagName("canvas")[0];
+            if(document && document.getElementsByTagName) {
+                this.a2dCanvas = document.getElementsByTagName("canvas")[0];
+            }
             //this is only the initial setup of the canvas element and its events
             if(!this.a2dCanvas) {
                 this.a2dCanvas = document.createElement("canvas");
                 document.body.appendChild(this.a2dCanvas);
                 var windowSize = new a2d.Dimension(window.innerWidth, window.innerHeight);
                 //this.setSize(windowSize);
-                this.a2dCanvas.setAttribute("width", windowSize.Width);
-                this.a2dCanvas.setAttribute("height", windowSize.Height);                
+                //this.a2dCanvas.setAttribute("width", windowSize.Width);
+                //this.a2dCanvas.setAttribute("height", windowSize.Height);                
+                this.a2dCanvas.width = windowSize.Width;
+                this.a2dCanvas.height = windowSize.Height;
             }
             a2d.mousePosition = new a2d.Position(0, 0);
             this.a2dCanvas.addEventListener("mousemove", function(e) {
@@ -103,10 +108,21 @@
                     clickedNode.fireEvent.call(clickedNode, "click");
                 }
             });
+            window.addEventListener("resize", this.onResize);
             this.context = this.a2dCanvas.getContext("2d");
             
         }
         return this.a2dCanvas;
+    },
+    onResize: function() {
+        this.a2dCanvas.style.position = "absolute";
+        this.a2dCanvas.style.width = "100%";
+        this.a2dCanvas.style.height = "100%";
+        this.a2dCanvas.style.top = "0";
+        this.a2dCanvas.style.left = "0";
+
+        this.dimension = new a2d.Dimension( parseInt(getComputedStyle(canvas, null).getPropertyCSSValue("height").cssText, 10),
+                                            parseInt(getComputedStyle(canvas, null).getPropertyCSSValue("width").cssText, 10));
     },
     set canvas(canvasID){
         this.a2dCanvas = document.getElementById(canvasID);
@@ -137,6 +153,23 @@
         }
         return this.a2dRoot;
     },
+    set fullscreen(b) {
+        this.a2dFullScreen = b;
+
+        if(b) {
+            if (this.canvas.requestFullScreen) {
+                this.canvas.requestFullScreen();
+            } else if (this.canvas.mozRequestFullScreen) {
+                this.canvas.mozRequestFullScreen();
+            } else if (this.canvas.webkitRequestFullScreen) {
+                this.canvas.webkitRequestFullScreen();
+            }            
+        }        
+        this.onResize();
+    },
+    get fullscreen() {
+        return this.a2dFullScreen;
+    },
     set root(node) {
         this.a2dRoot = node;
     },
@@ -158,8 +191,8 @@
      * Request animation frame. 
      * Browser-specific animation frame, or 60fps timeout callback.
      * @param {Function} function to be executed when an animation frame is ready.
-     */
-    requestFrame: (function(){
+     */            
+    requestFrame: (function(){    
     return  window.requestAnimationFrame   ||
         window.webkitRequestAnimationFrame ||
         window.mozRequestAnimationFrame    ||

@@ -61,16 +61,14 @@ a2d.Label = function(t, opts) {
 	this.textAlign = "center";
 	this.draw = function() {
 		updateBB();
-		var p = self.position.clone();
+		var p = self.absolutePosition.clone();
 		if(self.scrollLock && p.X < 0) {
 			p.X += a2d.dimension.Width;              
 		}
 		if(self.scrollLock && p.Y < 0) {
 			p.Y += a2d.dimension.Height;
 		}		
-		if(!self.scrollLock) {
-			p.add(a2d.offset);
-		}
+		p.add(this.offset);
 		if(this.relative) {
 			p.add(this.parent.position);
 		}	
