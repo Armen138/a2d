@@ -40,6 +40,7 @@ a2d.TileGrid = function (data) {
                 tileCount++;
             }
         }
+        //canvasCache = this.getCache();
     };
     /**
      * Hijack the fireEvent method to add a little tile-related information to each click event
@@ -93,9 +94,11 @@ a2d.TileGrid = function (data) {
             fromTile,
             toTile;
         if (this.visible) {
+        
             if(!lastOffset || lastOffset.not(this.offset)) {
                 if(a2d.forceClear) {
-                    canvasCache.width = canvasCache.width;
+                    //canvasCache.width = canvasCache.width;
+                    canvasCache.getContext("2d").clearRect(0, 0, a2d.dimension.Width, a2d.dimension.Height);
                 }
                 fromTile = this.getTile(this.offset);
                 fromTile.add(new a2d.Position(1, 1)); //correction for top/left tiles
@@ -115,6 +118,9 @@ a2d.TileGrid = function (data) {
                 } 
                 lastOffset = this.offset.clone();
             }            
+            
+            //canvasCache.offset = this.offset;
+            //canvasCache.draw();
             a2d.context.drawImage(canvasCache, 0, 0);    
         } 
         $draw();
@@ -131,6 +137,21 @@ a2d.TileGrid = function (data) {
             to: new a2d.Position((fromTile.X + Math.floor(a2d.dimension.Width / tileSize.Width) + 1) + 1,
                 (fromTile.Y + Math.floor(a2d.dimension.Height / tileSize.Height) + 1) + 1)
         });
+    };
+    this.getCache = function() {
+        var cCanvas = document.createElement("canvas"),
+            cContext = cCanvas.getContext("2d"),
+            fullWidth = tileSize.Width * gridSize.Width,
+            fullHeight = tileSize.Height * gridSize.Height;
+            //scale = new a2d.Vector(miniSize.Width / fullWidth, miniSize.Height / fullHeight);
+        cCanvas.width = fullWidth;
+        cCanvas.height = fullHeight;
+        for(var x = 0; x < gridSize.Width; x++) {
+            for(var y = 0; y < gridSize.Height; y++) {
+                tiles[x][y].draw(cCanvas);
+            }
+        }
+        return new a2d.Tile(cCanvas);
     };
     /**
      * render an image of this tilegrid in the given size,

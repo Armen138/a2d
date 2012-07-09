@@ -21,6 +21,7 @@ a2d.IsoGrid = function (data) {
     this.boundingBox = new a2d.Rectangle(new a2d.Position(0, 0), new a2d.Position(a2d.dimension.Width, a2d.dimension.Height));
     this.scrollLock = true;
     this.offset = new a2d.Position(0, 0);
+    this.dimension = new a2d.Dimension(a2d.dimension.Width, a2d.dimension.Height);
     this.setData = function (data) {
         var x = 0, y = 0, tileCount = 0;
         gridSize = new a2d.Dimension(data.gridSize[0], data.gridSize[1]);
@@ -139,7 +140,8 @@ a2d.IsoGrid = function (data) {
             toTile;
         if (this.visible) {            
             if(true) {//!lastOffset || lastOffset.not(a2d.offset)) {
-                canvasCache.width = canvasCache.width;
+                canvasCache.width = self.dimension.Width;
+                canvasCache.height = self.dimension.Height;
                 fromTile = new a2d.Position(0, 0); //this.getTile(a2d.offset);
                 //fromTile.add(new a2d.Position(1, 1)); //correction for top/left tiles
                 //fromTile.scale(new a2d.Position(-1, -1));
@@ -159,7 +161,7 @@ a2d.IsoGrid = function (data) {
                 } 
                 lastOffset = self.offset.clone(); //new a2d.Position(a2d.offset.X, a2d.offset.Y);
             }
-            a2d.context.drawImage(canvasCache, 0, 0);    
+            a2d.context.drawImage(canvasCache, self.position.X, self.position.Y);    
         } 
         $draw();
     };
