@@ -148,5 +148,8 @@ a2d.Node = function () {
             }            
         }
         this.fireEvent("draw");
+        if(a2d.drawCounter !== undefined) {
+            a2d.drawCounter++;
+        }
     };
 };
