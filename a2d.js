@@ -1,4 +1,29 @@
 /*global document, window */
+
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function (oThis) {
+    if (typeof this !== "function") {
+      // closest thing possible to the ECMAScript 5 internal IsCallable function
+      throw new TypeError("Function.prototype.bind - what is trying to be bound is not callable");
+    }
+
+    var aArgs = Array.prototype.slice.call(arguments, 1), 
+        fToBind = this, 
+        fNOP = function () {},
+        fBound = function () {
+          return fToBind.apply(this instanceof fNOP
+                                 ? this
+                                 : oThis,
+                               aArgs.concat(Array.prototype.slice.call(arguments)));
+        };
+
+    fNOP.prototype = this.prototype;
+    fBound.prototype = new fNOP();
+
+    return fBound;
+  };
+}
+
 /**
  * A happy namespace for all game engine stuffs.
  * @namespace
@@ -192,16 +217,18 @@
      * Browser-specific animation frame, or 60fps timeout callback.
      * @param {Function} function to be executed when an animation frame is ready.
      */            
-    requestFrame: (function(){    
-    return  window.requestAnimationFrame   ||
-        window.webkitRequestAnimationFrame ||
+    requestFrame: /*(function(){ 
+
+    return  window.webkitRequestAnimationFrame ||
+        window.requestAnimationFrame       ||
         window.mozRequestAnimationFrame    ||
         window.oRequestAnimationFrame      ||
         window.msRequestAnimationFrame     ||
         function( callback ){
             window.setTimeout(callback, 1000 / 60);
         };
-    }()).bind(window),
+    }()).bind(window)*/
+    window.webkitRequestAnimationFrame.bind(window),
     /**
      * named keys
      * @namespace
