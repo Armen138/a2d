@@ -29,6 +29,218 @@ if (!Function.prototype.bind) {
     return fBound;
   };
 }
+//using n2d namespace during object.create refactor
+
+var n2d = Object.create({}, function() {
+    var canvas,
+        context,
+        root,
+        fullscreen,
+        loaded = false,
+        resources = {},
+        progress = function() {
+            var name,
+                total = 0,
+                c = 0;
+            if(!loaded) {
+                for (name in resources) {
+                    if(resources.hasOwnProperty(name)) {
+                        if((resources[name].width && resources[name].width > 0) || resources[name].audioLoaded /*|| (a2d.resources[name].play)*/) {
+                            c++;
+                        }
+                        total++;
+                    }
+                }
+                if(c == total) {
+                    loaded = true;
+                    n2d.fireEvent("load");
+                } else {
+                    n2d.fireEvent("progress", { loaded : c, total: total });
+                }
+            }            
+        },
+        requestAnimationFrame: (function {
+            return  window.webkitRequestAnimationFrame ||
+            window.requestAnimationFrame       ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function( callback ){
+                window.setTimeout(callback, 1000 / 60);
+            };
+        }()).bind(window)},
+        frame: function() {
+            if(forceClear && context) {
+                context.clearRect(0, 0, a2d.dimension.Width, a2d.dimension.Height);                
+            }   
+            requestFrame(frame);        
+            //window.webkitRequestAnimationFrame(a2d.frame);
+            root.draw();
+            n2d.fireEvent("draw");            
+        };
+    return {
+        version: {
+            value: "0.4.0.3";
+        },
+        resources: {
+            get: function() {
+                return resources;
+            }
+        },        
+        canvas: {
+            get: function() {
+                return canvas; 
+            },
+            set: function(id) {
+                canvas = document.getElementById(id);
+            }
+        },
+        root: {
+            get: function() {
+                if(!root){
+                    console.log("acquire root node");
+                    root = new a2d.Node();
+                    this.frame();
+                }            
+        }
+        return this.a2dRoot;
+            }
+        }
+        dimension: {
+            get: function() {
+                return new a2d.Dimension(this.canvas.width, this.canvas.height);
+            },
+            set: function(dimension) {
+                canvas.setAttribute("width", newsize.Width);
+                canvas.setAttribute("height", newsize.Height);
+            }
+        },
+        load: {
+            value: function(loadData) {
+                var name;
+                for (name in loadData) {
+                    if(loadData.hasOwnProperty(name)) {
+                        if (loadData[name].match(/png$|jpg$|jpeg$|gif$|bmp$/i)) {
+                            resources[name] = new Image();
+                        } else {
+                            resources[name] = new a2d.Audio();
+                        }
+                        resources[name].onload = progress;
+                        resources[name].onreadystatechange = function() { progress(); };
+                        resources[name].src = loadData[name];
+                    }
+                }
+                progress();
+            }
+        },
+        key: { 
+            value: {
+                /** @constant */
+                BACKSPACE:8,
+                /** @constant */
+                TAB:9,
+                /** @constant */
+                ENTER:13,
+                /** @constant */
+                SHIFT:16,
+                /** @constant */
+                CTRL:17,
+                /** @constant */
+                ALT:18,
+                /** @constant */
+                PAUSE:19,
+                /** @constant */
+                CAPS_LOCK:20,
+                /** @constant */
+                ESC:27,
+                /** @constant */
+                SPACE:32,
+                /** @constant */
+                PAGEUP:33,
+                /** @constant */
+                PAGEDOWN:34,
+                /** @constant */
+                END:35,
+                /** @constant */
+                HOME:36,
+                /** @constant */
+                ARROW_LEFT:37,
+                /** @constant */
+                ARROW_UP:38,
+                /** @constant */
+                ARROW_RIGHT:39,
+                /** @constant */
+                ARROW_DOWN:40,
+                /** @constant */
+                INSERT:45,
+                /** @constant */
+                DELETE:46,
+                /** @constant */
+                F1:112,
+                /** @constant */
+                F2:113,
+                /** @constant */
+                F3:114,
+                /** @constant */
+                F4:115,
+                /** @constant */
+                F5:116,
+                /** @constant */
+                F6:117,
+                /** @constant */
+                F7:118,
+                /** @constant */
+                F8:119,
+                /** @constant */
+                F9:120,
+                /** @constant */
+                F10:121,
+                /** @constant */
+                F11:122,
+                /** @constant */
+                F12:123,
+                /** @constant */
+                NUM_LOCK:144,
+                /** @constant */
+                SCROLL_LOCK:145
+            }
+        }
+    };
+};
+
+n2d.Base = {
+    create: function(preset, props) {       
+        var o = Object.create(this, props);
+        for(var p in preset) {
+            if(preset.hasOwnProperty(p)) {
+                Object.defineProperty(o, p, Object.getOwnPropertyDescriptor(preset, p));
+            }
+        }
+        return o;
+    }
+};
+
+    /**
+        },
+        forceClear: { value: false, enumerable: true },
+        resources: {value: []},
+        mute: {value: false, enumerable: true},
+
+    };
+});
+
+n2d.New = {
+    create: function(preset, props) {       
+        var o = Object.create(this, props);
+        for(var p in preset) {
+            if(preset.hasOwnProperty(p)) {
+                Object.defineProperty(o, p, Object.getOwnPropertyDescriptor(preset, p));
+            }
+        }
+        return o;
+    }
+};
+
 
 /**
  * A happy namespace for all game engine stuffs.

@@ -1,4 +1,45 @@
 /*global a2d */
+
+n2d.Events = n2d.Base.create(function() {
+    var eventList = {},
+        fireEvent = function() {
+            var i,
+                eventFunction = "on" + eventName.charAt(0).toUpperCase() + eventName.slice(1);      
+            if(eventList[eventName]) {
+                for(i = 0; i < eventList[eventName].length; i++) {
+                    eventList[eventName][i](eventObject);
+                }           
+            }
+            if(self[eventFunction]) {
+                self[eventFunction](eventObject);
+            }
+        },
+        addEventListener = function() {
+            if(!eventList[eventName]) {
+                eventList[eventName] = [];
+            }
+            eventList[eventName].push(callback);            
+        };
+    return {
+        hasEvent: function(eventName) {
+            return eventList[eventName] !== undefined;
+        },
+        removeEventListener: function(eventName, callback) {
+            var idx = -1;
+            if(eventList[eventName]) {
+                idx = eventList[eventName].indexOf(callback);
+                if(idx != -1) {
+                    eventList[eventName].splice(idx, 1);
+                }
+            }
+        },
+        addEventListener: addEventListener,
+        on: addEventListener,
+        fireEvent: fireEvent,
+        emit: fireEvent
+    };
+}());
+
 /**
  * Anything that fires events inherits from this.
  * @class
