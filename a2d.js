@@ -11,10 +11,16 @@ if (!Function.prototype.bind) {
         fToBind = this, 
         fNOP = function () {},
         fBound = function () {
+            try {
+
           return fToBind.apply(this instanceof fNOP
                                  ? this
                                  : oThis,
                                aArgs.concat(Array.prototype.slice.call(arguments)));
+            } catch(e) {
+                //catching what javascriptcore considers an illegal use of instanceof
+                return fToBind.apply(oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+            }
         };
 
     fNOP.prototype = this.prototype;
@@ -140,14 +146,16 @@ if (!Function.prototype.bind) {
         return this.a2dCanvas;
     },
     onResize: function() {
-        this.a2dCanvas.style.position = "absolute";
-        this.a2dCanvas.style.width = "100%";
-        this.a2dCanvas.style.height = "100%";
-        this.a2dCanvas.style.top = "0";
-        this.a2dCanvas.style.left = "0";
+        if(this.a2dCanvas) {
+            this.a2dCanvas.style.position = "absolute";
+            this.a2dCanvas.style.width = "100%";
+            this.a2dCanvas.style.height = "100%";
+            this.a2dCanvas.style.top = "0";
+            this.a2dCanvas.style.left = "0";
 
-        this.dimension = new a2d.Dimension( parseInt(getComputedStyle(canvas, null).getPropertyCSSValue("height").cssText, 10),
-                                            parseInt(getComputedStyle(canvas, null).getPropertyCSSValue("width").cssText, 10));
+            this.dimension = new a2d.Dimension( parseInt(getComputedStyle(canvas, null).getPropertyCSSValue("height").cssText, 10),
+                                                parseInt(getComputedStyle(canvas, null).getPropertyCSSValue("width").cssText, 10));
+        }
     },
     set canvas(canvasID){
         this.a2dCanvas = document.getElementById(canvasID);
@@ -205,10 +213,12 @@ if (!Function.prototype.bind) {
     },
     /** @private */
     frame : function () {     
-        if(a2d.forceClear) {
-            a2d.canvas.width = a2d.canvas.width;
+        if(a2d.forceClear && a2d.context) {
+            a2d.context.clearRect(0, 0, a2d.dimension.Width, a2d.dimension.Height);
+            //a2d.canvas.width = a2d.canvas.width;
         }   
         a2d.requestFrame(a2d.frame);        
+        //window.webkitRequestAnimationFrame(a2d.frame);
         a2d.root.draw();
         a2d.fireEvent("draw");
     },
